@@ -15,8 +15,7 @@ package bloodbank.security;
 
 import static bloodbank.utility.MyConstants.PARAM1;
 import static bloodbank.utility.MyConstants.PU_NAME;
-import static com.algonquincollege.cst8277.models.SecurityUser.SECURITY_USER_BY_NAME_QUERY;
-import static com.algonquincollege.cst8277.util.MyConstants.PARAM1;
+import static bloodbank.entity.SecurityUser.SECURITY_USER_BY_NAME_QUERY;
 import static java.util.Collections.emptySet;
 
 import java.util.Set;

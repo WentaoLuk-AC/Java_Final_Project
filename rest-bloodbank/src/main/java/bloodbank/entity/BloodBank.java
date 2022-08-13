@@ -38,6 +38,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * The persistent class for the blood_bank database table.
@@ -50,6 +51,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedQuery( name = BloodBank.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(bb) FROM BloodBank bb where bb.name=:param1")
 @Inheritance( strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn( columnDefinition = "bit(1)", name = "privately_owned", discriminatorType = DiscriminatorType.INTEGER)
+
 //TODO - add in Json Annotations to indicate different sub-classes of BloodBank
 public abstract class BloodBank extends PojoBase implements Serializable { 
     private static final long serialVersionUID = 1L;
