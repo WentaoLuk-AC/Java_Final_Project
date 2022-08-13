@@ -5,17 +5,18 @@
  * @author Mike Norman
  * 
  * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ *   041004996, Jenya, Pribylov (as from ACSIS)
+ *   040923573, Jacob, Crocker (as from ACSIS)
+ *   041013211, Jade, Mak (as from ACSIS)
+ *   studentId, Wentao, Luk (as from ACSIS)
  * 
  */
 package bloodbank.security;
 
 import static bloodbank.utility.MyConstants.PARAM1;
 import static bloodbank.utility.MyConstants.PU_NAME;
-
+import static com.algonquincollege.cst8277.models.SecurityUser.SECURITY_USER_BY_NAME_QUERY;
+import static com.algonquincollege.cst8277.util.MyConstants.PARAM1;
 import static java.util.Collections.emptySet;
 
 import java.util.Set;
@@ -46,16 +47,14 @@ public class CustomIdentityStoreJPAHelper {
     public SecurityUser findUserByName(String username) {
         LOG.debug("find a SecurityUser by name = {}", username);
         SecurityUser user = null;
-        /* TODO
-         *  Call the entity manager's createNamedQuery() method to call a named query on SecurityUser
-         *  The named query should be labeled "SecurityUser.userByName" and accepts a parameter called "param1"
-         *  
-         *  Call getSingleResult() inside a try-catch statement (NoResultException)
-         *  
-         *  Note: until this method is complete, the Basic Authentication for all HTTP
-         *        requests will fail, none of the REST'ful Endpoints will work.
-         *  
-         */
+        TypedQuery < SecurityUser > q = em.createNamedQuery(SECURITY_USER_BY_NAME_QUERY, SecurityUser.class);
+		q.setParameter(PARAM1, username);
+		try {        
+            user = q.getSingleResult();
+        }
+        catch (NoResultException e) {
+        	
+        }
         return user;
     }
 
