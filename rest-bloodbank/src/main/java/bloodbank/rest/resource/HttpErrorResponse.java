@@ -1,5 +1,6 @@
 /**
  * File: HttpErrorResponse.java
+
  * Course materials (22S) CST 8277
  *
  * @author Teddy Yap

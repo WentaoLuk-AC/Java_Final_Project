@@ -1,12 +1,13 @@
 /**
  * File: BloodBankResource.java Course materials (22S) CST 8277
+
  *
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 2
+ *   041004996, Jenya, Pribylov (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,8 +32,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import static bloodbank.utility.MyConstants.ADMIN_ROLE;
 import static bloodbank.utility.MyConstants.USER_ROLE;
+import static bloodbank.utility.MyConstants.BLOODBANK_RESOURCE_NAME;
+import static bloodbank.utility.MyConstants.ADMIN_ROLE;
+import static bloodbank.utility.MyConstants.BLOODBANK_RESOURCE_NAME;
+import static bloodbank.utility.MyConstants.RESOURCE_PATH_ID_ELEMENT;
+import static bloodbank.utility.MyConstants.RESOURCE_PATH_ID_PATH;
+import static bloodbank.utility.MyConstants.USER_ROLE;
+
 import javax.ws.rs.core.Response.Status;
 
 
@@ -42,11 +52,12 @@ import bloodbank.ejb.BloodBankService;
 import bloodbank.entity.BloodBank;
 import bloodbank.entity.BloodDonation;
 
-@Path("bloodbank")
+//@Path("/{bloodbank}}")
+@Path(BLOODBANK_RESOURCE_NAME)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class BloodBankResource {
-    
+
     private static final Logger LOG = LogManager.getLogger();
 
     @EJB
@@ -63,68 +74,74 @@ public class BloodBankResource {
         Response response = Response.ok(bloodBanks).build();
         return response;
     }
-    
+
     @GET
-    // --TODO:  specify the roles allowed for this method
-	@RolesAllowed({ ADMIN_ROLE, USER_ROLE })
-    @Path("/{bloodBankID}")
-    public Response getBloodBankById(@PathParam("bloodBankID") int bloodBankId) {
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response getBloodBankById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int bloodBankId) {
         LOG.debug("Retrieving blood bank with id = {}", bloodBankId);
         BloodBank bloodBank = service.getBloodBankById(bloodBankId);
         Response response = Response.ok(bloodBank).build();
         return response;
     }
 
+    @RolesAllowed({ADMIN_ROLE})
     @DELETE
-    // --TODO:  specify the roles allowed for this method
-	@RolesAllowed({ ADMIN_ROLE })
-    @Path("/{bloodBankID}")
-    public Response deleteBloodBank(@PathParam("bloodBankID") int bbID) {
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deleteBloodBank(@PathParam(RESOURCE_PATH_ID_ELEMENT) int bbID) {
         LOG.debug("Deleting blood bank with id = {}", bbID);
         BloodBank bb = service.deleteBloodBank(bbID);
         Response response = Response.ok(bb).build();
         return response;
-        
+
     }
-    
+
     // Please try to understand and test the below methods:
     @RolesAllowed({ADMIN_ROLE})
     @POST
     public Response addBloodBank(BloodBank newBloodBank) {
         LOG.debug("Adding a new blood bank = {}", newBloodBank);
-        if (service.isDuplicated(newBloodBank)) {
-            HttpErrorResponse err = new HttpErrorResponse(Status.CONFLICT.getStatusCode(), "entity already exists");
-            return Response.status(Status.CONFLICT).entity(err).build();
+        if (sc.isCallerInRole(ADMIN_ROLE)) {
+            if (service.isDuplicated(newBloodBank)) {
+                HttpErrorResponse err = new HttpErrorResponse(Status.CONFLICT.getStatusCode(), "entity already exists");
+                return Response.status(Status.CONFLICT).entity(err).build();
+            } else {
+                BloodBank tempBloodBank = service.persistBloodBank(newBloodBank);
+                return Response.ok(tempBloodBank).build();
+            }
+        } else {
+            throw new ForbiddenException("Access Denied");
         }
-        else {
-            BloodBank tempBloodBank = service.persistBloodBank(newBloodBank);
-            return Response.ok( tempBloodBank).build();
-        }
+
     }
 
     @RolesAllowed({ADMIN_ROLE})
     @POST
-    @Path("/{bloodBankID}/blooddonation")
-    public Response addBloodDonationToBloodBank(@PathParam("bloodBankID") int bbID, BloodDonation newBloodDonation) {
-        LOG.debug( "Adding a new BloodDonation to blood bank with id = {}", bbID);
-        
+    @Path(RESOURCE_PATH_ID_PATH + "/blooddonation")
+    public Response addBloodDonationToBloodBank(@PathParam(RESOURCE_PATH_ID_ELEMENT) int bbID, BloodDonation newBloodDonation) {
+        LOG.debug("Adding a new BloodDonation to blood bank with id = {}", bbID);
+
         BloodBank bb = service.getBloodBankById(bbID);
         newBloodDonation.setBank(bb);
         bb.getDonations().add(newBloodDonation);
-        service.updateBloodBank( bbID, bb);
-        
-        return Response.ok( bb).build();
+        service.updateBloodBank(bbID, bb);
+
+        return Response.ok(bb).build();
     }
 
-    @RolesAllowed({ADMIN_ROLE, USER_ROLE})
+    @RolesAllowed({ADMIN_ROLE})
     @PUT
-    @Path("/{bloodBankID}")
-    public Response updateBloodBank(@PathParam("bloodBankID") int bbID, BloodBank updatingBloodBank) {
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response updateBloodBank(@PathParam(RESOURCE_PATH_ID_ELEMENT) int bbID, BloodBank updatingBloodBank) {
         LOG.debug("Updating a specific blood bank with id = {}", bbID);
-        Response response = null;
-        BloodBank updatedBloodBank = service.updateBloodBank(bbID, updatingBloodBank);
-        response = Response.ok(updatedBloodBank).build();
-        return response;
+        if (sc.isCallerInRole(ADMIN_ROLE)) {
+            Response response = null;
+            BloodBank updatedBloodBank = service.updateBloodBank(bbID, updatingBloodBank);
+            response = Response.ok(updatedBloodBank).build();
+            return response;
+        } else {
+            throw new ForbiddenException("Access Denied");
+        }
     }
-    
 }
+
+    

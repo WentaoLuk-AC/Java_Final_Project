@@ -1,12 +1,15 @@
 /**
- * File: PersonResource.java Course materials (22S) CST 8277
+ * File: PersonResource.java Course materials (22S) CST 8277\
+
+ * 
+
  *
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 2
+ *   041004996, Jenya, Pribylov (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
@@ -28,6 +31,7 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -47,11 +51,11 @@ import bloodbank.ejb.BloodBankService;
 import bloodbank.entity.Address;
 import bloodbank.entity.Person;
 import bloodbank.entity.SecurityUser;
-
 @Path(PERSON_RESOURCE_NAME)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class PersonResource {
+
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -114,6 +118,16 @@ public class PersonResource {
         Response response = null;
         Address address = service.setAddressForPersonPhone(personId, phoneId, newAddress);
         response = Response.ok(address).build();
+        return response;
+    }
+
+    @DELETE
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(RESOURCE_PATH_ID_ELEMENT)
+    public Response deletePerson(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+        Response response = null;
+        service.deletePersonById(id);
+        response = Response.ok().build();
         return response;
     }
 }
