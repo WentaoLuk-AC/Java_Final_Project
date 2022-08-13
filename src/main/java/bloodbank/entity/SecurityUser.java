@@ -33,6 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -52,9 +53,12 @@ import bloodbank.rest.serializer.SecurityRoleSerializer;
 @Entity
 @Table(name = "security_user")
 @Access(AccessType.FIELD)
+@NamedQuery(name = SecurityUser.SECURITY_USER_BY_NAME_QUERY, query = "SELECT u FROM SecurityUser u LEFT JOIN FETCH u.person WHERE u.username = :param1")
 public class SecurityUser implements Serializable, Principal {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
+    
+    public static final String SECURITY_USER_BY_NAME_QUERY = "SecurityUser.userByName";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
