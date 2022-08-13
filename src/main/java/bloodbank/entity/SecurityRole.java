@@ -27,6 +27,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @SuppressWarnings("unused")
@@ -39,9 +40,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "security_role")
 @Access(AccessType.FIELD)
+@NamedQuery(name = SecurityRole.SECURITY_ROLE_BY_NAME_QUERY, query = "SELECT r FROM SecurityRole r WHERE r.roleName = :param1")
 public class SecurityRole implements Serializable {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
+    
+    public static final String SECURITY_ROLE_BY_NAME_QUERY = "SecurityRole.roleByName";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
