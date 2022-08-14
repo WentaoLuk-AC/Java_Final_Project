@@ -61,7 +61,7 @@ public class PhoneResource {
     protected SecurityContext sc;
 
     @GET
-    @RolesAllowed({ADMIN_ROLE, USER_ROLE})
+    @RolesAllowed({ADMIN_ROLE})
     public Response getPhones() {
         LOG.debug("retrieving all phones ...");
         List<Phone> phones = service.getAllPhones();
@@ -70,7 +70,7 @@ public class PhoneResource {
     }
 
     @GET
-    @RolesAllowed({ADMIN_ROLE, USER_ROLE})
+    @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response getPhoneById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
         LOG.debug("try to retrieve specific phone " + id);
