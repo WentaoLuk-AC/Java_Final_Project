@@ -6,7 +6,7 @@
  *
  * @date 2020 10
  *
- * (Modified) @author Student Name
+ * (Modified) @author Jade Mak
  */
 package bloodbank;
 
@@ -99,5 +99,17 @@ public class TestBloodBankSystem {
         List<Person> persons = response.readEntity(new GenericType<List<Person>>(){});
         assertThat(persons, is(not(empty())));
         assertThat(persons, hasSize(1));
+    }
+    @Test
+    public void test02_all_persons_with_user_role()throws JsonMappingException, JsonProcessingException {
+    	Response response = webTarget
+                .register(userAuth)
+                .path(PERSON_RESOURCE_NAME)
+                .request()
+                .get();
+            assertThat(response.getStatus(), is(403));
+            
+    
+    
     }
 }
