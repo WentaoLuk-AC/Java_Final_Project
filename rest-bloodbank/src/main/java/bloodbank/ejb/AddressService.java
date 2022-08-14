@@ -52,7 +52,7 @@ public class AddressService implements Serializable {
      * this will update an address
      * 
      * @param id - id of entity to update
-     * @param donationWithUpdates - entity with updated information
+     * @param addressWithUpdates - entity with updated information
      * @return Entity with updated information
      */
 	@Transactional
