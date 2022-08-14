@@ -4,11 +4,11 @@
  * @author Teddy Yap
  * @author Mike Norman
  * 
- * Updated by:  Group NN
+ * Updated by:  Group 2
  *   041004996, Jenya, Pribylov (as from ACSIS)
  *   040923573, Jacob, Crocker (as from ACSIS)
  *   041013211, Jade, Mak (as from ACSIS)
- *   studentId, Wentao, Luk (as from ACSIS)
+ *   040991469, Wentao, Lu (as from ACSIS)
  * 
  */
 package bloodbank.security;

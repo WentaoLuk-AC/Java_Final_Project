@@ -6,7 +6,7 @@
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
+ * Updated by:  Group 2
  *   041013211, Jade, Mak(as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
