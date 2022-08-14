@@ -39,6 +39,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import bloodbank.rest.serializer.BloodBankSerializer;
 
 /**
  * The persistent class for the blood_bank database table.

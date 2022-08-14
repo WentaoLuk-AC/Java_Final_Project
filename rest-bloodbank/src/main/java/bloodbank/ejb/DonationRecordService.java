@@ -14,18 +14,13 @@ import javax.persistence.TypedQuery;
 import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import bloodbank.entity.DonationRecord;
 
 @Singleton
 public class DonationRecordService  implements Serializable{
 	
     private static final long serialVersionUID = 1L;
-    
-    private static final Logger LOG = LogManager.getLogger();
-    
+        
     @PersistenceContext(name = PU_NAME)
     protected EntityManager em;
     
