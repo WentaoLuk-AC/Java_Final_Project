@@ -6,8 +6,7 @@
  * @author (original) Mike Norman
  * 
  * Updated by:  Group NN
- *   041004996, Jenya, Pribylov (as from ACSIS)
- *   040923573, Jacob, Crocker (as from ACSIS)
+ *   041013211 Jade, Mak
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  * 
@@ -33,6 +32,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -40,7 +40,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
+import static bloodbank.entity.SecurityUser.USER_OWNING_PERSON_QUERY;
 import bloodbank.rest.serializer.SecurityRoleSerializer;
 
 @SuppressWarnings("unused")
@@ -53,12 +53,14 @@ import bloodbank.rest.serializer.SecurityRoleSerializer;
 @Entity
 @Table(name = "security_user")
 @Access(AccessType.FIELD)
-@NamedQuery(name = SecurityUser.SECURITY_USER_BY_NAME_QUERY, query = "SELECT u FROM SecurityUser u LEFT JOIN FETCH u.person WHERE u.username = :param1")
+@NamedQueries({
+	@NamedQuery(name = SecurityUser.SECURITY_USER_BY_NAME_QUERY, query = "SELECT u FROM SecurityUser u LEFT JOIN FETCH u.person WHERE u.username = :param1"),
+	@NamedQuery(name = USER_OWNING_PERSON_QUERY, query = " SELECT u FROM SecurityUser u WHERE u.person.id = :param1")})
 public class SecurityUser implements Serializable, Principal {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
-    
     public static final String SECURITY_USER_BY_NAME_QUERY = "SecurityUser.userName";
+    public static final String USER_OWNING_PERSON_QUERY = "SecurityUser.userOwnPerson";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

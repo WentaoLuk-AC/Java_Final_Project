@@ -6,7 +6,7 @@
  * @author Mike Norman
  * 
  * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
+ *   041013211, Jade, Mak (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
@@ -51,8 +51,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @NamedQuery( name = BloodBank.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(bb) FROM BloodBank bb where bb.name=:param1")
 @Inheritance( strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn( columnDefinition = "bit(1)", name = "privately_owned", discriminatorType = DiscriminatorType.INTEGER)
-
-//TODO - add in Json Annotations to indicate different sub-classes of BloodBank
+@JsonSerialize( using = BloodBankSerializer.class )
 public abstract class BloodBank extends PojoBase implements Serializable { 
     private static final long serialVersionUID = 1L;
 
