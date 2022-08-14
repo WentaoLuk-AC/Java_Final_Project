@@ -32,6 +32,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import bloodbank.rest.serializer.SecurityRoleSerializer;
+
 @SuppressWarnings("unused")
 
 /**
@@ -42,6 +46,7 @@ import javax.persistence.Table;
 @Access (AccessType.FIELD)
 @Table ( name = "security_role")
 @NamedQuery(  name = ROLE_NAME_QUERY , query = "SELECT r FROM SecurityRole r where r.roleName = :param1")
+@JsonSerialize( using = SecurityRoleSerializer.class)
 public class SecurityRole implements Serializable {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
