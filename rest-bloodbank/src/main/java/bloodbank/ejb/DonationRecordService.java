@@ -37,7 +37,7 @@ public class DonationRecordService  implements Serializable{
     	return drQuery.getResultList();
     }
     
-    public DonationRecord getDonationRecordbyId(int id) {
+    public DonationRecord getDonationRecordById(int id) {
     	TypedQuery<DonationRecord> drQuery = em.createNamedQuery("DonationRecord.findById", DonationRecord.class);
     	drQuery.setParameter(PARAM1, id);
     	return drQuery.getSingleResult();
@@ -51,7 +51,7 @@ public class DonationRecordService  implements Serializable{
 	
 	@Transactional
 	public DonationRecord updateDonationRecordById(int id, DonationRecord updatedRecord) {
-		DonationRecord selectedRecord = getDonationRecordbyId(id);
+		DonationRecord selectedRecord = getDonationRecordById(id);
 		if (selectedRecord != null) {
 			em.refresh(selectedRecord);
 			selectedRecord.setTested(updatedRecord.getTested() == 1);
@@ -65,7 +65,7 @@ public class DonationRecordService  implements Serializable{
 	
 	@Transactional
 	public DonationRecord deleteDonationRecordById(int id) {
-		DonationRecord record = getDonationRecordbyId(id);
+		DonationRecord record = getDonationRecordById(id);
 		if (record != null) {
 			em.refresh(record);
 			em.remove(record);
