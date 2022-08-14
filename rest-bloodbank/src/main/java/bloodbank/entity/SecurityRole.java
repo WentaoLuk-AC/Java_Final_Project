@@ -6,7 +6,7 @@
  * @author (original) Mike Norman
  *
  * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
+ *   041013211, Jade, Mak (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
@@ -18,6 +18,19 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import static bloodbank.entity.SecurityRole.ROLE_NAME_QUERY;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @SuppressWarnings("unused")
 
@@ -25,15 +38,23 @@ import java.util.Set;
  * Role class used for (JSR-375) Java EE Security authorization/authentication
  */
 
-//TODO - make into JPA Entity and add all necessary annotations
+@Entity
+@Access (AccessType.FIELD)
+@Table ( name = "security_role")
+@NamedQuery(  name = ROLE_NAME_QUERY , query = "SELECT r FROM SecurityRole r where r.roleName = :param1")
 public class SecurityRole implements Serializable {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
-
+    
+    public static final String ROLE_NAME_QUERY = "SecurityRole.roleName";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "name", nullable = false)
     protected int id;
     
+    @Column(name = "name", nullable = false)
     protected String roleName;
-    
+    @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH}, fetch = FetchType.LAZY)
     protected Set<SecurityUser> users = new HashSet<SecurityUser>();
 
     public SecurityRole() {

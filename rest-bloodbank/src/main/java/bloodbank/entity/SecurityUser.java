@@ -6,8 +6,8 @@
  * @author (original) Mike Norman
  * 
  * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ *   041004996, Jenya, Pribylov (as from ACSIS)
+ *   040923573, Jacob, Crocker (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  * 
@@ -20,6 +20,29 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import bloodbank.rest.serializer.SecurityRoleSerializer;
+
 @SuppressWarnings("unused")
 
 /**
@@ -27,18 +50,35 @@ import java.util.Set;
  */
 
 //TODO - make into JPA Entity and add all the necessary annotations
+@Entity
+@Table(name = "security_user")
+@Access(AccessType.FIELD)
+@NamedQuery(name = SecurityUser.SECURITY_USER_BY_NAME_QUERY, query = "SELECT u FROM SecurityUser u LEFT JOIN FETCH u.person WHERE u.username = :param1")
 public class SecurityUser implements Serializable, Principal {
     /** explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
-
+    
+    public static final String SECURITY_USER_BY_NAME_QUERY = "SecurityUser.userName";
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     protected int id;
     
+    @Basic(optional = false)
+    @Column(name = "username")
     protected String username;
     
+    @Basic(optional = false)
+    @Column(name = "password_hash")
     protected String pwHash;
     
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
     protected Person person;
     
+    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @JoinTable(name = "user_has_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName="user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     protected Set<SecurityRole> roles = new HashSet<SecurityRole>();
 
     public SecurityUser() {
@@ -67,6 +107,8 @@ public class SecurityUser implements Serializable, Principal {
     }
 
     // TODO:  setup custom Json Serializer
+    @JsonInclude(Include.NON_NULL)
+    @JsonSerialize(using = SecurityRoleSerializer.class)
     public Set<SecurityRole> getRoles() {
         return roles;
     }
