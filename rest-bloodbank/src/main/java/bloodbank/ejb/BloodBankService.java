@@ -7,7 +7,7 @@
  * @author (original) Mike Norman
  * 
  * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
+ *   041013211, Jade, Mak(as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
  *   studentId, firstName, lastName (as from ACSIS)
@@ -32,7 +32,7 @@ import static bloodbank.utility.MyConstants.PROPERTY_KEYSIZE;
 import static bloodbank.utility.MyConstants.PROPERTY_SALTSIZE;
 import static bloodbank.utility.MyConstants.PU_NAME;
 import static bloodbank.utility.MyConstants.USER_ROLE;
-
+import static bloodbank.entity.SecurityRole.ROLE_NAME_QUERY;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,6 +63,7 @@ import bloodbank.entity.DonationRecord;
 import bloodbank.entity.Person;
 import bloodbank.entity.SecurityRole;
 import bloodbank.entity.SecurityUser;
+import static bloodbank.entity.SecurityUser.USER_OWNING_PERSON_QUERY;
 
 @SuppressWarnings("unused")
 
@@ -112,7 +113,7 @@ public class BloodBankService implements Serializable {
         String pwHash = pbAndjPasswordHash.generate(DEFAULT_USER_PASSWORD.toCharArray());
         userForNewPerson.setPwHash(pwHash);
         userForNewPerson.setPerson(newPerson);
-        SecurityRole userRole = /* TODO - use NamedQuery on SecurityRole to find USER_ROLE */ null;
+        SecurityRole userRole = em.createNamedQuery(ROLE_NAME_QUERY, SecurityRole.class).setParameter(PARAM1,USER_ROLE).getSingleResult();
         userForNewPerson.getRoles().add(userRole);
         userRole.getUsers().add(userForNewPerson);
         em.persist(userForNewPerson);
@@ -174,11 +175,7 @@ public class BloodBankService implements Serializable {
         Person person = getPersonId(id);
         if (person != null) {
             em.refresh(person);
-            TypedQuery<SecurityUser> findUser = 
-                /* TODO - use NamedQuery on SecurityRole to find this related Person
-                   so that when we remove it, the relationship from SECURITY_USER table
-                   is not dangling
-                */ null;
+            TypedQuery<SecurityUser> findUser = em.createNamedQuery(USER_OWNING_PERSON_QUERY, SecurityUser.class).setParameter(PARAM1, person.getId());
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(person);
