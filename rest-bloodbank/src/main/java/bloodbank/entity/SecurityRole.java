@@ -54,7 +54,7 @@ public class SecurityRole implements Serializable {
     public static final String ROLE_NAME_QUERY = "SecurityRole.roleName";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "name", nullable = false)
+    @Column(name = "role_id", nullable = false)
     protected int id;
     
     @Column(name = "name", nullable = false)
