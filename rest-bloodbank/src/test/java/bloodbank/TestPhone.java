@@ -14,14 +14,19 @@ import static bloodbank.utility.MyConstants.DEFAULT_ADMIN_USER;
 import static bloodbank.utility.MyConstants.DEFAULT_ADMIN_USER_PASSWORD;
 import static bloodbank.utility.MyConstants.DEFAULT_USER;
 import static bloodbank.utility.MyConstants.DEFAULT_USER_PASSWORD;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +36,14 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import bloodbank.entity.Phone;
+import bloodbank.utility.MyConstants;
 
 @TestMethodOrder ( MethodOrderer.MethodName.class)
 public class TestPhone {
@@ -67,6 +79,64 @@ public class TestPhone {
         Client client = ClientBuilder.newClient(
             new ClientConfig().register(MyObjectMapperProvider.class).register(new LoggingFeature()));
         webTarget = client.target(uri);
+    }
+    
+    @Test
+    public void test_add_phone_admin_role() throws JsonMappingException, JsonProcessingException {
+    	Phone phone = new Phone();
+    	phone.setAreaCode("1");
+    	phone.setCountryCode("613");
+    	phone.setNumber("123-4567");
+    	Response response = webTarget
+    			.register(adminAuth)
+    			.path(MyConstants.PHONE_RESOURCE_NAME)
+    			.request()
+    			.post(Entity.json(phone));
+    	assertThat(response.getStatus(), is(200));
+    }
+    
+    @Test
+    public void test_add_phone_user_role() throws JsonMappingException, JsonProcessingException{
+    	Phone phone = new Phone();
+    	phone.setAreaCode("1");
+    	phone.setCountryCode("613");
+    	phone.setNumber("123-4567");
+    	Response response = webTarget
+    			.register(adminAuth)
+    			.path(MyConstants.PHONE_RESOURCE_NAME)
+    			.request()
+    			.post(Entity.json(phone));
+    	assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
+    }
+    
+    @Test
+    public void delete_phone_admin_role() throws JsonMappingException, JsonProcessingException {
+    	Response response = webTarget
+    			.register(adminAuth)
+    			.path(MyConstants.PHONE_RESOURCE_NAME+"/2")
+    			.request()
+    			.delete();
+    	assertThat(response.getStatus(), is(200));
+    }
+    
+    @Test
+    public void delete_phone_user_role() throws JsonMappingException, JsonProcessingException{
+    	Response response = webTarget
+    			.register(adminAuth)
+    			.path(MyConstants.PHONE_RESOURCE_NAME+"/2")
+    			.request()
+    			.delete();
+    	assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
+    }
+    
+    @Test 
+    public void  all_phone_user_role() throws JsonMappingException, JsonProcessingException {
+    	Response response = webTarget
+    			.register(adminAuth)
+    			.path(MyConstants.PHONE_RESOURCE_NAME+"/all")
+    			.request()
+    			.get();
+    	assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
     }
 
 }
