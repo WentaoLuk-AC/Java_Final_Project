@@ -59,6 +59,7 @@ public class SecurityRole implements Serializable {
     
     @Column(name = "name", nullable = false)
     protected String roleName;
+    
     @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH}, fetch = FetchType.LAZY)
     protected Set<SecurityUser> users = new HashSet<SecurityUser>();
 

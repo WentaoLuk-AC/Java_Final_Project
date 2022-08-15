@@ -25,24 +25,24 @@ import org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl;
 
 import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
-
-
 public class PBKDF2HashGenerator {
-    // the nickname of this Hash algorithm is 'PBandJ' (Peanut-Butter-And-Jam, like the sandwich!)
-    // I would like to use the constants from org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl
-    // but they are not visible, so type in them all over again :-( Hope there are no typos!
+	// the nickname of this Hash algorithm is 'PBandJ' (Peanut-Butter-And-Jam, like
+	// the sandwich!)
+	// I would like to use the constants from
+	// org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl
+	// but they are not visible, so type in them all over again :-( Hope there are
+	// no typos!
 
-    public static void main(String[] args) {
-        
-        Pbkdf2PasswordHash pbAndjPasswordHash = new Pbkdf2PasswordHashImpl();
+	public static void main(String[] args) {
+		Pbkdf2PasswordHash pbAndjPasswordHash = new Pbkdf2PasswordHashImpl();
 
-        Map<String, String> pbAndjProperties = new HashMap<>();
-        pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);
-        pbAndjProperties.put(PROPERTY_ITERATIONS, DEFAULT_PROPERTY_ITERATIONS);
-        pbAndjProperties.put(PROPERTY_SALTSIZE, DEFAULT_SALT_SIZE);
-        pbAndjProperties.put(PROPERTY_KEYSIZE, DEFAULT_KEY_SIZE);
-        pbAndjPasswordHash.initialize(pbAndjProperties);
-        String pwHash = pbAndjPasswordHash.generate(args[0].toCharArray());
-        System.out.printf("Hash for %s is %s%n", args[0], pwHash);
-    }
+		Map<String, String> pbAndjProperties = new HashMap<>();
+		pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);
+		pbAndjProperties.put(PROPERTY_ITERATIONS, DEFAULT_PROPERTY_ITERATIONS);
+		pbAndjProperties.put(PROPERTY_SALTSIZE, DEFAULT_SALT_SIZE);
+		pbAndjProperties.put(PROPERTY_KEYSIZE, DEFAULT_KEY_SIZE);
+		pbAndjPasswordHash.initialize(pbAndjProperties);
+		String pwHash = pbAndjPasswordHash.generate(args[0].toCharArray());
+		System.out.printf("Hash for %s is %s%n", args[0], pwHash);
+	}
 }

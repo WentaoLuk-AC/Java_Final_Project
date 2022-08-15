@@ -95,7 +95,7 @@ public class TestBloodBankSystem {
             .path(PERSON_RESOURCE_NAME)
             .request()
             .get();
-        assertThat(response.getStatus(), is(200));
+        assertThat(response.getStatus(), is(2020));
         List<Person> persons = response.readEntity(new GenericType<List<Person>>(){});
         assertThat(persons, is(not(empty())));
         assertThat(persons, hasSize(1));
