@@ -128,6 +128,8 @@ public class TestAddress {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
+		Address address = response.readEntity(Address.class);
+		assertThat(address.getId(), is(addressId));
     }
     
     @Test
@@ -140,7 +142,8 @@ public class TestAddress {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-
+		Address address = response.readEntity(Address.class);
+		assertThat(address.getId(), is(addressId));
     }
 
     

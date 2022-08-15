@@ -49,6 +49,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import bloodbank.entity.BloodDonation;
 import bloodbank.entity.DonationRecord;
 import bloodbank.entity.Person;
 
@@ -98,10 +99,10 @@ public class TestBloodDonation {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-//		List<DonationRecord> donationRecords = response.readEntity(new GenericType<List<DonationRecord>>() {
-//		});
-// 
-//		assertThat(donationRecords, is(not(empty())));
+		List<BloodDonation> bloodDonations = response.readEntity(new GenericType<List<BloodDonation>>() {
+		});
+ 
+		assertThat(bloodDonations, is(not(empty())));
     }
  
     @Test
@@ -113,7 +114,10 @@ public class TestBloodDonation {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-
+		List<BloodDonation> bloodDonations = response.readEntity(new GenericType<List<BloodDonation>>() {
+		});
+ 
+		assertThat(bloodDonations, is(not(empty())));
     }
  
     @Test
@@ -127,7 +131,8 @@ public class TestBloodDonation {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-
+		BloodDonation bloodDonation = response.readEntity(BloodDonation.class);
+		assertThat(bloodDonation.getId(), is(bloodDonationId));
     }
     
     @Test
@@ -140,6 +145,8 @@ public class TestBloodDonation {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
+		BloodDonation bloodDonation = response.readEntity(BloodDonation.class);
+		assertThat(bloodDonation.getId(), is(bloodDonationId));
     }
     
     

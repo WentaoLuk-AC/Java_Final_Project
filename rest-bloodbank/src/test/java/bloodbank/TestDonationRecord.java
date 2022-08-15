@@ -98,10 +98,10 @@ public class TestDonationRecord {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-//		List<DonationRecord> donationRecords = response.readEntity(new GenericType<List<DonationRecord>>() {
-//		});
-// 
-//		assertThat(donationRecords, is(not(empty())));
+		List<DonationRecord> donationRecords = response.readEntity(new GenericType<List<DonationRecord>>() {
+		});
+ 
+		assertThat(donationRecords, is(not(empty())));
     }
     
     @Test
@@ -125,7 +125,8 @@ public class TestDonationRecord {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-//		DonationRecord donationRecord = response.readEntity(DonationRecord.class);
+		DonationRecord donationRecord = response.readEntity(DonationRecord.class);
+		assertThat(donationRecord.getId(), is(donationRecordId));
 
     }
     
@@ -141,6 +142,8 @@ public class TestDonationRecord {
 				.get();
 		assertThat(response.getStatus(), is(200));
 		DonationRecord donationRecord = response.readEntity(DonationRecord.class);
+		assertThat(donationRecord.getId(), is(donationRecordId));
+
 
     }
     
