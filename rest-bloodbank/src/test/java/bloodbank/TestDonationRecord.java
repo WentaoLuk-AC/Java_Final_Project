@@ -1,14 +1,12 @@
 /**
- * File: OrderSystemTestSuite.java
- * Course materials (22S) CST 8277
- * Teddy Yap
- * (Original Author) Mike Norman
- *
- * @date 2020 10
- *
- * (Modified) @author Jade Mak
+ * @Name TestDonationRecord.java
+ * @author Wentao Lu 040991469
+ * 
  */
+
+
 package bloodbank;
+
 
 import static bloodbank.utility.MyConstants.APPLICATION_API_VERSION;
 import static bloodbank.utility.MyConstants.APPLICATION_CONTEXT_ROOT;
@@ -16,6 +14,7 @@ import static bloodbank.utility.MyConstants.DEFAULT_ADMIN_USER;
 import static bloodbank.utility.MyConstants.DEFAULT_ADMIN_USER_PASSWORD;
 import static bloodbank.utility.MyConstants.DEFAULT_USER;
 import static bloodbank.utility.MyConstants.DEFAULT_USER_PASSWORD;
+import static bloodbank.utility.MyConstants.DONATION_RECORD_RESOURCE_NAME;
 import static bloodbank.utility.MyConstants.PERSON_RESOURCE_NAME;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -29,10 +28,12 @@ import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,16 +49,17 @@ import org.junit.jupiter.api.TestMethodOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import bloodbank.entity.DonationRecord;
 import bloodbank.entity.Person;
 
-@SuppressWarnings("unused")
 
-@TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestBloodBankSystem {
-    private static final Class<?> _thisClaz = MethodHandles.lookup().lookupClass();
-    private static final Logger logger = LogManager.getLogger(_thisClaz);
-
-    static final String HTTP_SCHEMA = "http";
+@TestMethodOrder ( MethodOrderer.MethodName.class)
+public class TestDonationRecord {
+	
+	private static final Class<?> _thisClaz = MethodHandles.lookup().lookupClass();
+	private static final Logger logger = LogManager.getLogger(_thisClaz);
+	
+	static final String HTTP_SCHEMA = "http";
     static final String HOST = "localhost";
     static final int PORT = 8080;
 
@@ -65,7 +67,7 @@ public class TestBloodBankSystem {
     static URI uri;
     static HttpAuthenticationFeature adminAuth;
     static HttpAuthenticationFeature userAuth;
-
+    
     @BeforeAll
     public static void oneTimeSetUp() throws Exception {
         logger.debug("oneTimeSetUp");
@@ -78,7 +80,7 @@ public class TestBloodBankSystem {
         adminAuth = HttpAuthenticationFeature.basic(DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_PASSWORD);
         userAuth = HttpAuthenticationFeature.basic(DEFAULT_USER, DEFAULT_USER_PASSWORD);
     }
-
+    
     protected WebTarget webTarget;
     @BeforeEach
     public void setUp() {
@@ -86,30 +88,84 @@ public class TestBloodBankSystem {
             new ClientConfig().register(MyObjectMapperProvider.class).register(new LoggingFeature()));
         webTarget = client.target(uri);
     }
-
+    
     @Test
-    public void test01_all_persons_with_adminrole() throws JsonMappingException, JsonProcessingException {
-        Response response = webTarget
-            //.register(userAuth)
-            .register(adminAuth)
-            .path(PERSON_RESOURCE_NAME)
-            .request()
-            .get();
-        assertThat(response.getStatus(), is(200));
-        List<Person> persons = response.readEntity(new GenericType<List<Person>>(){});
-        assertThat(persons, is(not(empty())));
-        assertThat(persons, hasSize(1));
-    }
-    @Test
-    public void test02_all_persons_with_user_role()throws JsonMappingException, JsonProcessingException {
+    public void read_all_donation_record_admin_role() throws JsonMappingException, JsonProcessingException {
+    	
     	Response response = webTarget
-                .register(userAuth)
-                .path(PERSON_RESOURCE_NAME)
-                .request()
-                .get();
-            assertThat(response.getStatus(), is(403));
-            
-    
-    
+    			.register(adminAuth)
+				.path(DONATION_RECORD_RESOURCE_NAME)
+				.request()
+				.get();
+		assertThat(response.getStatus(), is(200));
+//		List<DonationRecord> donationRecords = response.readEntity(new GenericType<List<DonationRecord>>() {
+//		});
+// 
+//		assertThat(donationRecords, is(not(empty())));
     }
+    
+    @Test
+    public void read_all_donation_record_user_role() throws JsonMappingException, JsonProcessingException {
+    	
+    	Response response = webTarget
+    			.register(userAuth)
+				.path(DONATION_RECORD_RESOURCE_NAME)
+				.request()
+				.get();
+		assertThat(response.getStatus(), is(403));
+    }
+    
+    @Test
+    public void read_one_donation_record_admin_role() throws JsonMappingException, JsonProcessingException {
+		int donationRecordId = 1;
+
+    	Response response = webTarget
+    			.register(adminAuth)
+				.path(DONATION_RECORD_RESOURCE_NAME+ "/" + donationRecordId)
+				.request()
+				.get();
+		assertThat(response.getStatus(), is(200));
+//		DonationRecord donationRecord = response.readEntity(DonationRecord.class);
+
+    }
+    
+    
+    @Test
+    public void read_one_donation_record_user_role() throws JsonMappingException, JsonProcessingException {
+		int donationRecordId = 1;
+
+    	Response response = webTarget
+    			.register(userAuth)
+				.path(DONATION_RECORD_RESOURCE_NAME+ "/" + donationRecordId)
+				.request()
+				.get();
+		assertThat(response.getStatus(), is(200));
+		DonationRecord donationRecord = response.readEntity(DonationRecord.class);
+
+    }
+    
+
+    
+    
+    
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
