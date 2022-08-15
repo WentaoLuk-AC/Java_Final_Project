@@ -5,10 +5,11 @@
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
- *   041013211 Jade, Mak
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 2
+ *   041004996, Jenya, Pribylov (as from ACSIS)
+ *   040923573, Jacob, Crocker (as from ACSIS)
+ *   041013211, Jade, Mak (as from ACSIS)
+ *   040991469, Wentao, Lu (as from ACSIS)
  * 
  */
 package bloodbank.entity;
