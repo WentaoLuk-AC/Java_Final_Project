@@ -100,9 +100,9 @@ public class TestAddress {
 				.request()
 				.get();
 		assertThat(response.getStatus(), is(200));
-		List<Address> addrs = response.readEntity(new GenericType<List<Address>>() {
+		List<Address> addresses = response.readEntity(new GenericType<List<Address>>() {
 		});
-		assertThat(addrs, is(not(empty())));
+		assertThat(addresses, is(not(empty())));
     }
     
     @Test
