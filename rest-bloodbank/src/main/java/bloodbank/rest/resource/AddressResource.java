@@ -40,6 +40,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,8 +74,19 @@ public class AddressResource {
 	@Path(RESOURCE_PATH_ID_PATH)
 	public Response getAddressById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
 		LOG.debug("try to retrieve specific address " + id);
-		Address address = service.getAddressById(id);
-		Response response= Response.ok(address).build();
+		Response response;
+		try {
+			Address address = service.getAddressById(id);
+			if (address == null) {
+				response = Response.status(Status.NOT_FOUND).build();
+			} else {
+				response = Response.ok(address).build();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			response = Response.status(Status.NOT_FOUND).build();
+		}
 		return response;
 	}
 
